@@ -4,6 +4,23 @@ jdk:
   - oraclejdk8
 
 after_success:
+  -wget --content-disposition wget --content-disposition http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.7.201606060606/jacoco-0.7.7.201606060606.zip 
+  -unzip -o jacoco-0.7.7.201606060606.zip  
+  -cd lib  
+  -mv * ../  
+  -cd ..  
+  -chmod a+x *  
+  -cd $PWD  
+  -rm  'jacoco.exec'
+  -export JAVA_TOOL_OPTIONS=-javaagent:$PWD/jacocoagent.jar=destfile=$PWD/jacoco.exec,append=true  
+  -travis_wait 90 mvn test  -Dmaven.test.failure.ignore=true -Djacoco.skip=true -Dcobertura.skip=true -Dmaven.clover.skip=true -Dmaven.javadoc.skip=true -Drat.skip=true -Drat.ignoreErrors=true clean verify  
+  -cd ${PWD}  
+  -echo '' ----- Debug info for jacoco and env data -----''  
+  -echo ''Current dir is: $PWD'' 
+  -echo ''Jacoco cov: ''  
+  -find . -name ''*.exec''  
+  -echo '' ----------------------------------------------'' 
+  - ./df-build.sh
   - .buildscript/deploy_snapshot.sh
 
 env:
