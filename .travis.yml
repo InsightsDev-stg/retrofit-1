@@ -1,37 +1,34 @@
-language: java
-
-jdk:
-  - oraclejdk8
- 
+addons:
+  artifacts:
+    debug: true
+    paths:
+    - libs.zip
+    - build.zip
+    - testbuild.zip
+    target_paths: ded44f73-5d22-46f3-8042-01c890b93531
 after_success:
-  - wget --content-disposition http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/0.7.7.201606060606/jacoco-0.7.7.201606060606.zip 
-  - unzip -o jacoco-0.7.7.201606060606.zip  
-  - cd lib  
-  - mv * ../  
-  - cd ..  
-  - chmod a+x *  
-  - cd $PWD  
-  - rm  'jacoco.exec'
-  - export JAVA_TOOL_OPTIONS=-javaagent:$PWD/jacocoagent.jar=destfile=$PWD/jacoco.exec,append=true  
-  - travis_wait 360 mvn package test -Dmaven.test.failure.ignore=true test  -Dmaven.test.failure.ignore=true -Djacoco.skip=true -Dcobertura.skip=true -Dmaven.clover.skip=true -Dmaven.javadoc.skip=true -Drat.skip=true -Drat.ignoreErrors=true clean verify  
-  - cd ${PWD}   
-  - find . -name '*.exec'  
-  - ./df-build.sh
-
-env:
-  global:
-    - secure: "M0bjPTMwinz0uXN6qjXcpyfvhz/YX9W7ty4RdV90jMU8ZJxSdGdKXRy1N0TsMO8ciOQ2fryE/FpiX+arrphnVvqUmGBh386lGvj1rhgrVqXNqlGE23cQpzHsQ0nNqTGIxnoE4dmJF3PjWoYG+B4WbFsSb3PB7sEjpLq7klqGeHk="
-    - secure: "iL5BdYAmMaEDRKxNx1d9Zxn0tfJhCzXBGUvn+p7QGeQDUSVCdCc8cXS4ePbRj0401pK20nK1OouIi0lLP+z0QpZY6RrKIEncGOZeSFPQbS/vnZ7niCYJQdXCZ/GOlYUkAW2AsQl5bzzHYbHKX/TVgTuO3iFlbyeoZZuIjD3VaiM="
-
-branches:
-  except:
-    - gh-pages
-
-notifications:
-  email: false
-
-sudo: false
-
+- ./df-build.sh
+before_install:
+- sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g'
+  $HOME/.m2/settings.xml
+branches: ''
 cache:
   directories:
-    - $HOME/.m2
+  - $HOME/.m2
+  - $HOME/.m2
+env:
+  global:
+  - secure: M0bjPTMwinz0uXN6qjXcpyfvhz/YX9W7ty4RdV90jMU8ZJxSdGdKXRy1N0TsMO8ciOQ2fryE/FpiX+arrphnVvqUmGBh386lGvj1rhgrVqXNqlGE23cQpzHsQ0nNqTGIxnoE4dmJF3PjWoYG+B4WbFsSb3PB7sEjpLq7klqGeHk=
+  - secure: iL5BdYAmMaEDRKxNx1d9Zxn0tfJhCzXBGUvn+p7QGeQDUSVCdCc8cXS4ePbRj0401pK20nK1OouIi0lLP+z0QpZY6RrKIEncGOZeSFPQbS/vnZ7niCYJQdXCZ/GOlYUkAW2AsQl5bzzHYbHKX/TVgTuO3iFlbyeoZZuIjD3VaiM=
+jdk:
+- oraclejdk8
+language: java
+notifications:
+  webhooks:
+    on_failure: always
+    on_start: always
+    on_success: always
+    urls:
+    - http://insights-portal-insights-service-webserver-stg.public-swarm.devfactory.com/travisWebHookListener?build_id=ded44f73-5d22-46f3-8042-01c890b93531
+sudo: false
+# Modified by Insights Service at 2016-10-14 16:28:01.747150
